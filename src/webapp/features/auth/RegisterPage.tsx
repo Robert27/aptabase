@@ -1,7 +1,7 @@
 import { Button } from "@components/Button";
 import { Page } from "@components/Page";
 import { TextInput } from "@components/TextInput";
-import { requestRegisterLink } from "@features/auth";
+import { DEFAULT_OAUTH_STATUS, requestRegisterLink } from "@features/auth";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DataResidency } from "./DataResidency";
@@ -55,10 +55,10 @@ export function Component() {
           const status = await response.json();
           setOauthStatus(status);
         } else {
-          setOauthStatus({ github: false, google: false, authentik: false, emailAuthDisabled: false });
+          setOauthStatus(DEFAULT_OAUTH_STATUS);
         }
       } catch {
-        setOauthStatus({ github: false, google: false, authentik: false, emailAuthDisabled: false });
+        setOauthStatus(DEFAULT_OAUTH_STATUS);
       } finally {
         setLoading(false);
       }
