@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SignInWithAuthentik } from "./SignInWithAuthentik";
 import { SignInWithGitHub } from "./SignInWithGitHub";
 import { SignInWithGoogle } from "./SignInWithGoogle";
+import { DEFAULT_OAUTH_STATUS } from "./auth";
 
 type OAuthStatus = {
   github: boolean;
@@ -22,10 +23,10 @@ export function OAuthButtons() {
           const status = await response.json();
           setOauthStatus(status);
         } else {
-          setOauthStatus({ github: false, google: false, authentik: false, emailAuthDisabled: false });
+          setOauthStatus(DEFAULT_OAUTH_STATUS);
         }
       } catch {
-        setOauthStatus({ github: false, google: false, authentik: false, emailAuthDisabled: false });
+        setOauthStatus(DEFAULT_OAUTH_STATUS);
       } finally {
         setLoading(false);
       }
