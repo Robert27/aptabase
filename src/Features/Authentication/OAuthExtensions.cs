@@ -218,7 +218,7 @@ public static class OAuthExtensions
             o.AuthorizationEndpoint = env.OAuthAuthentikAuthorizeUrl;
             o.TokenEndpoint = env.OAuthAuthentikTokenUrl;
             o.UserInformationEndpoint = env.OAuthAuthentikUserinfoUrl;
-            o.ClaimActions.MapJsonKey("id", "sub");
+            o.ClaimActions.MapJsonKey("id", "id");
             o.ClaimActions.MapJsonKey("name", "name");
             o.ClaimActions.MapJsonKey("email", "email");
             o.Events = new OAuthEvents
@@ -240,6 +240,7 @@ public static class OAuthExtensions
                             throw new Exception("Email not verified, can't login with Authentik.");
 
                         var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthService>();
+                        logger.LogWarning("Authentik user: {Name}, {Email}, {Id}", authentikUser.Name, authentikUser.Email, authentikUser.Id);
                         var user = await authService.FindOrCreateAccountWithOAuthAsync(authentikUser.Name, authentikUser.Email, "authentik", authentikUser.Id, context.HttpContext.RequestAborted);
                         context.RunClaimActions(JsonSerializer.SerializeToElement(new { id = user.Id, name = user.Name, email = user.Email }));
                     }
