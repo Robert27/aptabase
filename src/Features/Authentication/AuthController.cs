@@ -46,6 +46,9 @@ public class AuthController : Controller
     [HttpPost("/api/_auth/signin")]
     public async Task<IActionResult> SignIn([FromBody] SignInBodyRequest body, CancellationToken cancellationToken)
     {
+        if (_env.DisableEmailAuth)
+            return NotFound(new { });
+
         var found = await _authService.SendSignInEmailAsync(body.Email.Trim(), cancellationToken);
 
         if (!found)
@@ -58,6 +61,9 @@ public class AuthController : Controller
     [EnableRateLimiting("SignUp")]
     public async Task<IActionResult> Register([FromBody] RegisterBodyRequest body, CancellationToken cancellationToken)
     {
+        if (_env.DisableEmailAuth)
+            return NotFound(new { });
+
         await _authService.SendRegisterEmailAsync(body.Name.Trim(), body.Email.Trim(), cancellationToken);
         return Ok(new { });
     }
@@ -107,7 +113,8 @@ public class AuthController : Controller
         return Ok(new { 
             github = hasGitHub, 
             google = hasGoogle,
-            authentik = hasAuthentik
+            authentik = hasAuthentik,
+            emailAuthDisabled = _env.DisableEmailAuth
         });
     }
 

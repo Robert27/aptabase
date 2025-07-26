@@ -95,6 +95,10 @@ public class EnvSettings
     // Variable Name: OAUTH_AUTHENTIK_USERINFO_URL
     public string OAuthAuthentikUserinfoUrl { get; private set; } = "";
 
+    // Whether to disable email-based authentication (magic links)
+    // Variable Name: DISABLE_EMAIL_AUTH
+    public bool DisableEmailAuth { get; private set; } = false;
+
     //  The following properties are derived from the other settings
     public bool IsManagedCloud => Region == "EU" || Region == "US";
     public bool IsBillingEnabled => IsManagedCloud || IsDevelopment;
@@ -141,6 +145,7 @@ public class EnvSettings
             OAuthAuthentikAuthorizeUrl = Get("OAUTH_AUTHENTIK_AUTHORIZE_URL"),
             OAuthAuthentikTokenUrl = Get("OAUTH_AUTHENTIK_TOKEN_URL"),
             OAuthAuthentikUserinfoUrl = Get("OAUTH_AUTHENTIK_USERINFO_URL"),
+            DisableEmailAuth = GetBool("DISABLE_EMAIL_AUTH"),
 
             // On the container, the etc directory is mounted at ./etc
             // But during development, it's at ../etc
@@ -174,5 +179,15 @@ public class EnvSettings
     private static string MustGet(string name)
     {
         return Environment.GetEnvironmentVariable(name) ?? throw new Exception($"Missing {name} environment variable");
+    }
+
+    private static bool GetBool(string name)
+    {
+        var value = Environment.GetEnvironmentVariable(name);
+        if (string.IsNullOrEmpty(value))
+            return false;
+        if (bool.TryParse(value, out var result))
+            return result;
+        return false;
     }
 }

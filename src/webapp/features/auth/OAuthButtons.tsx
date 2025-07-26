@@ -7,6 +7,7 @@ type OAuthStatus = {
   github: boolean;
   google: boolean;
   authentik: boolean;
+  emailAuthDisabled: boolean;
 };
 
 export function OAuthButtons() {
@@ -21,10 +22,10 @@ export function OAuthButtons() {
           const status = await response.json();
           setOauthStatus(status);
         } else {
-          setOauthStatus({ github: false, google: false, authentik: false });
+          setOauthStatus({ github: false, google: false, authentik: false, emailAuthDisabled: false });
         }
       } catch {
-        setOauthStatus({ github: false, google: false, authentik: false });
+        setOauthStatus({ github: false, google: false, authentik: false, emailAuthDisabled: false });
       } finally {
         setLoading(false);
       }
@@ -51,14 +52,16 @@ export function OAuthButtons() {
         {oauthStatus.authentik && <SignInWithAuthentik />}
       </div>
 
-      <div className="relative my-4">
-        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-          <div className="w-full border-t" />
+      {!oauthStatus.emailAuthDisabled && (
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center" aria-hidden="true">
+            <div className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-muted">OR</span>
+          </div>
         </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-muted">OR</span>
-        </div>
-      </div>
+      )}
     </>
   );
 }
