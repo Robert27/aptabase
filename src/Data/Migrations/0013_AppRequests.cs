@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace Aptabase.Data.Migrations;
 
-[Migration(0012)]
+[Migration(0013)]
 public class AppOwnershipTransfers : Migration
 {
 
